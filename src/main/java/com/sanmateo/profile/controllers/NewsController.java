@@ -110,9 +110,9 @@ public class NewsController {
             @ApiImplicitParam(name = "size", value = "Used to limit query results", dataType = "int", defaultValue = "20", paramType = "path"),
             @ApiImplicitParam(name = "sort", value = "Used to sort query results", dataType = "string", example = "email,asc", paramType = "path"),
     })
-    public ResponseEntity<Page<NewsDto>> getAllActiveNews(Pageable pageable, @RequestParam("status") NewsStatus status) throws URISyntaxException {
-        final Page<NewsDto> departmentDtos = newsService.findByStatus(pageable, status).map(source -> newsService.convert(source));
-        return new ResponseEntity<>(departmentDtos, HttpStatus.OK);
+    public ResponseEntity<Page<NewsDto>> getNews(Pageable pageable, @RequestParam("status") NewsStatus status) throws URISyntaxException {
+        final Page<NewsDto> newsDtos = newsService.findByStatus(pageable, status).map(source -> newsService.convert(source));
+        return new ResponseEntity<>(newsDtos, HttpStatus.OK);
     }
 
     /**
