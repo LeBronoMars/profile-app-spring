@@ -70,6 +70,10 @@ public class NewsService {
         return newsRepository.findOne(id);
     }
 
+    public void delete(final News news) {
+        newsRepository.delete(news);
+    }
+
     public NewsDto convert(final News news) {
         final NewsDto newsDto = new NewsDto();
         newsDto.setId(news.getId());

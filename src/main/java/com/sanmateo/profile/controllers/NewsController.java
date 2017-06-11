@@ -114,4 +114,46 @@ public class NewsController {
         final Page<NewsDto> departmentDtos = newsService.findByStatus(pageable, status).map(source -> newsService.convert(source));
         return new ResponseEntity<>(departmentDtos, HttpStatus.OK);
     }
+
+    /**
+     * get news by id
+     * */
+    @RequestMapping(value = "/news/{id}",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getNewsById(@PathVariable String id) {
+        try {
+            final News existingNews = newsService.findOne(id);
+
+            if (existingNews == null) {
+                return new ResponseEntity<>(Collections.singletonMap("message", "Record not found."), HttpStatus.NOT_FOUND);
+            } else {
+                final NewsDto newsDto = newsService.convert(existingNews);
+                return ResponseEntity.ok().body(newsDto);
+            }
+        } catch (CustomException e) {
+            return new ResponseEntity<>(Collections.singletonMap("message", e.getLocalizedMessage()), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    /**
+     * delete news
+     * */
+    @RequestMapping(value = "/news/{id}",
+            method = RequestMethod.DELETE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> deleteNews(@PathVariable String id) {
+        try {
+            final News existingNews = newsService.findOne(id);
+
+            if (existingNews == null) {
+                return new ResponseEntity<>(Collections.singletonMap("message", "Record not found."), HttpStatus.NOT_FOUND);
+            } else {
+                newsService.delete(existingNews);
+                return new ResponseEntity<>(Collections.singletonMap("message", "News successfully deleted."), HttpStatus.OK);
+            }
+        } catch (CustomException e) {
+            return new ResponseEntity<>(Collections.singletonMap("message", e.getLocalizedMessage()), HttpStatus.BAD_REQUEST);
+        }
+    }
 }
