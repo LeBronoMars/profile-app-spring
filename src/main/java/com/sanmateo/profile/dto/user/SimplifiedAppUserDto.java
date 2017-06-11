@@ -13,9 +13,6 @@ public class SimplifiedAppUserDto {
 
     private String id;
 
-    @JsonProperty("employee_no")
-    private String employeeNo;
-
     @JsonProperty("first_name")
     private String firstName;
 

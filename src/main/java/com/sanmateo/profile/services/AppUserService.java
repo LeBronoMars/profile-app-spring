@@ -173,6 +173,7 @@ public class AppUserService {
         userDto.setPicUrl(appUser.getPicUrl());
         userDto.setGender(appUser.getGender());
         userDto.setSynced(appUser.isSynced());
+        userDto.setStatus(appUser.getStatus());
         return userDto;
     }
 
@@ -185,6 +186,7 @@ public class AppUserService {
         userDto.setContactNo(appUser.getContactNo());
         userDto.setEmail(appUser.getEmail());
         userDto.setPicUrl(appUser.getPicUrl());
+        userDto.setStatus(appUser.getStatus());
         return userDto;
     }
 
