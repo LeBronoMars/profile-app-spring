@@ -7,5 +7,5 @@ public enum Status {
 
     ACTIVE,
 
-    INACTIVE
+    ARCHIVED
 }

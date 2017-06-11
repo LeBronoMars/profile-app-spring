@@ -1,4 +1,4 @@
-package com.sanmateo.profile.dto.news;
+package com.sanmateo.profile.dto.gallery;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sanmateo.profile.enums.Status;
@@ -9,19 +9,17 @@ import lombok.Data;
  * Created by rsbulanon on 6/11/17.
  */
 @Data
-public class UpdateNewsDto {
+public class UpdateGalleryDto {
 
-    @ApiModelProperty(example = "News Title 1")
+    @ApiModelProperty(example = "Gallery 1")
     private String title;
 
-    @ApiModelProperty(example = "Lorem ipsum dolor")
-    private String body;
-
     @JsonProperty("image_url")
+    @ApiModelProperty(example = "https://pbs.twimg.com/profile_images/1410357501/SMR_Logo.jpg")
     private String imageUrl;
 
-    @JsonProperty("source_url")
-    private String sourceUrl;
+    @ApiModelProperty(example = "Lorem ipsum dolor")
+    private String description;
 
     @ApiModelProperty(example = "ACTIVE", allowableValues = "ACTIVE, ARCHIVED")
     private Status status;

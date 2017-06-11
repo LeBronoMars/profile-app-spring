@@ -1,15 +1,15 @@
 package com.sanmateo.profile.controllers;
 
 
-import com.sanmateo.profile.dto.news.CreateNewsDto;
-import com.sanmateo.profile.dto.news.NewsDto;
-import com.sanmateo.profile.dto.news.UpdateNewsDto;
+import com.sanmateo.profile.dto.gallery.CreateGalleryDto;
+import com.sanmateo.profile.dto.gallery.GalleryDto;
+import com.sanmateo.profile.dto.gallery.UpdateGalleryDto;
 import com.sanmateo.profile.enums.Status;
 import com.sanmateo.profile.exceptions.CustomException;
 import com.sanmateo.profile.models.AppUser;
-import com.sanmateo.profile.models.News;
+import com.sanmateo.profile.models.Gallery;
 import com.sanmateo.profile.services.AppUserService;
-import com.sanmateo.profile.services.NewsService;
+import com.sanmateo.profile.services.GalleryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -37,31 +37,31 @@ import java.util.Optional;
  */
 @Controller
 @RequestMapping(path = "/api")
-@Api(value = "News Module")
-public class NewsController {
+@Api(value = "Gallery Module")
+public class GalleryController {
 
-    private final Logger log = LoggerFactory.getLogger(NewsController.class);
+    private final Logger log = LoggerFactory.getLogger(GalleryController.class);
 
     @Autowired
     private AppUserService appUserService;
 
     @Autowired
-    private NewsService newsService;
+    private GalleryService galleryService;
 
     /**
-     * create news
+     * create gallery
      */
-    @RequestMapping(value = "/news",
+    @RequestMapping(value = "/gallery",
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> createNews(@Valid @RequestBody CreateNewsDto createNewsDto, HttpServletRequest request) {
-        log.info("REST request to create News : {}", createNewsDto);
+    public ResponseEntity<?> createNews(@Valid @RequestBody CreateGalleryDto createGalleryDto, HttpServletRequest request) {
+        log.info("REST request to create Gallery : {}", createGalleryDto);
         return Optional.ofNullable(request.getRemoteUser()).map(user -> {
             final AppUser appUser = appUserService.findByUsername(user);
             try {
-                final News news = newsService.createNews(appUser, createNewsDto);
-                final NewsDto newsDto = newsService.convert(news);
-                return ResponseEntity.created(new URI("/api/news/" + news.getId())).body(newsDto);
+                final Gallery gallery = galleryService.createGallery(appUser, createGalleryDto);
+                final GalleryDto galleryDto = galleryService.convert(gallery);
+                return ResponseEntity.created(new URI("/api/galleries/" + gallery.getId())).body(galleryDto);
             } catch (CustomException e) {
                 return new ResponseEntity<>(Collections.singletonMap("message", e.getLocalizedMessage()), HttpStatus.BAD_REQUEST);
             } catch (URISyntaxException e) {
@@ -71,25 +71,24 @@ public class NewsController {
     }
 
     /**
-     * update news
+     * update gallery
      */
-    @RequestMapping(value = "/news/{id}",
+    @RequestMapping(value = "/galleries/{id}",
             method = RequestMethod.PUT,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> updateNews(@PathVariable String id,
-                                        @Valid @RequestBody UpdateNewsDto updateNewsDto, HttpServletRequest request) {
-        log.info("REST request to update News : {}", updateNewsDto);
+    public ResponseEntity<?> updateGallery(@PathVariable String id,
+                                           @Valid @RequestBody UpdateGalleryDto updateGalleryDto, HttpServletRequest request) {
+        log.info("REST request to update Gallery : {}", updateGalleryDto);
         return Optional.ofNullable(request.getRemoteUser()).map(user -> {
             final AppUser appUser = appUserService.findByUsername(user);
             try {
-                final News existingNews = newsService.findOne(id);
+                final Gallery existingGallery = galleryService.findOne(id);
 
-                if (existingNews == null) {
+                if (existingGallery == null) {
                     return new ResponseEntity<>(Collections.singletonMap("message", "Record not found."), HttpStatus.NOT_FOUND);
                 } else {
-                    final News news = newsService.updateNews(appUser, existingNews, updateNewsDto);
-                    final NewsDto newsDto = newsService.convert(news);
-                    return ResponseEntity.ok().body(newsDto);
+                    final Gallery gallery = galleryService.updateGallery(appUser, existingGallery, updateGalleryDto);
+                    return ResponseEntity.ok().body(galleryService.convert(gallery));
                 }
             } catch (CustomException e) {
                 return new ResponseEntity<>(Collections.singletonMap("message", e.getLocalizedMessage()), HttpStatus.BAD_REQUEST);
@@ -98,9 +97,9 @@ public class NewsController {
     }
 
     /**
-     * get all news
+     * get all galleries
      */
-    @RequestMapping(value = "/news",
+    @RequestMapping(value = "/galleries",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional(readOnly = true)
@@ -110,26 +109,26 @@ public class NewsController {
             @ApiImplicitParam(name = "size", value = "Used to limit query results", dataType = "int", defaultValue = "20", paramType = "path"),
             @ApiImplicitParam(name = "sort", value = "Used to sort query results", dataType = "string", example = "email,asc", paramType = "path"),
     })
-    public ResponseEntity<Page<NewsDto>> getNews(Pageable pageable, @RequestParam("status") Status status) throws URISyntaxException {
-        final Page<NewsDto> newsDtos = newsService.findByStatus(pageable, status).map(source -> newsService.convert(source));
-        return new ResponseEntity<>(newsDtos, HttpStatus.OK);
+    public ResponseEntity<Page<GalleryDto>> getGalleries(Pageable pageable, @RequestParam("status") Status status) throws URISyntaxException {
+        final Page<GalleryDto> galleryDtos = galleryService.findByStatus(pageable, status).map(source -> galleryService.convert(source));
+        return new ResponseEntity<>(galleryDtos, HttpStatus.OK);
     }
 
     /**
-     * get news by id
+     * get gallery by id
      * */
-    @RequestMapping(value = "/news/{id}",
+    @RequestMapping(value = "/galleries/{id}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getNewsById(@PathVariable String id) {
+    public ResponseEntity<?> getGalleryById(@PathVariable String id) {
         try {
-            final News existingNews = newsService.findOne(id);
+            final Gallery existingGallery = galleryService.findOne(id);
 
-            if (existingNews == null) {
+            if (existingGallery == null) {
                 return new ResponseEntity<>(Collections.singletonMap("message", "Record not found."), HttpStatus.NOT_FOUND);
             } else {
-                final NewsDto newsDto = newsService.convert(existingNews);
-                return ResponseEntity.ok().body(newsDto);
+                final GalleryDto galleryDto = galleryService.convert(existingGallery);
+                return ResponseEntity.ok().body(galleryDto);
             }
         } catch (CustomException e) {
             return new ResponseEntity<>(Collections.singletonMap("message", e.getLocalizedMessage()), HttpStatus.BAD_REQUEST);
@@ -139,18 +138,18 @@ public class NewsController {
     /**
      * delete news
      * */
-    @RequestMapping(value = "/news/{id}",
+    @RequestMapping(value = "/galleries/{id}",
             method = RequestMethod.DELETE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> deleteNews(@PathVariable String id) {
         try {
-            final News existingNews = newsService.findOne(id);
+            final Gallery existingGallery = galleryService.findOne(id);
 
-            if (existingNews == null) {
+            if (existingGallery == null) {
                 return new ResponseEntity<>(Collections.singletonMap("message", "Record not found."), HttpStatus.NOT_FOUND);
             } else {
-                newsService.delete(existingNews);
-                return new ResponseEntity<>(Collections.singletonMap("message", "News successfully deleted."), HttpStatus.OK);
+                galleryService.delete(existingGallery);
+                return new ResponseEntity<>(Collections.singletonMap("message", "Gallery successfully deleted."), HttpStatus.OK);
             }
         } catch (CustomException e) {
             return new ResponseEntity<>(Collections.singletonMap("message", e.getLocalizedMessage()), HttpStatus.BAD_REQUEST);

@@ -12,29 +12,26 @@ import javax.persistence.*;
  */
 @Entity
 @Data
-public class News extends BaseModel {
+public class Gallery extends BaseModel {
 
     @Column(nullable = false)
     private String title;
 
     @Column(nullable = false)
-    @Lob
-    private String body;
-
-    @Column(nullable = false)
     private String imageUrl;
 
-    private String sourceUrl;
-
-    @OneToOne
-    @Fetch(value = FetchMode.JOIN)
-    private AppUser reportedBy;
-
-    @OneToOne
-    @Fetch(value = FetchMode.JOIN)
-    private AppUser updatedBy;
+    @Column(nullable = false)
+    private String description;
 
     @Column(columnDefinition = "CHAR(10)", length = 10, nullable = false)
     @Enumerated(EnumType.STRING)
     private Status status;
+
+    @OneToOne
+    @Fetch(value = FetchMode.JOIN)
+    private AppUser createdBy;
+
+    @OneToOne
+    @Fetch(value = FetchMode.JOIN)
+    private AppUser updatedBy;
 }

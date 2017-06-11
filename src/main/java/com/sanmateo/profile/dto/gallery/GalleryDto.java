@@ -1,4 +1,4 @@
-package com.sanmateo.profile.dto.news;
+package com.sanmateo.profile.dto.gallery;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -12,7 +12,7 @@ import java.util.Date;
  * Created by rsbulanon on 6/11/17.
  */
 @Data
-public class NewsDto {
+public class GalleryDto {
     private String id;
 
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
@@ -27,18 +27,15 @@ public class NewsDto {
 
     private String title;
 
-    private String body;
-
-    private Status status;
-
     @JsonProperty("image_url")
     private String imageUrl;
 
-    @JsonProperty("source_url")
-    private String sourceUrl;
+    private String description;
+
+    private Status status;
 
     @JsonProperty("reported_by")
-    private SimplifiedAppUserDto reportedBy;
+    private SimplifiedAppUserDto createdBy;
 
     @JsonProperty("updated_by")
     private SimplifiedAppUserDto updatedBy;

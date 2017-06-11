@@ -3,7 +3,7 @@ package com.sanmateo.profile.services;
 import com.sanmateo.profile.dto.news.CreateNewsDto;
 import com.sanmateo.profile.dto.news.NewsDto;
 import com.sanmateo.profile.dto.news.UpdateNewsDto;
-import com.sanmateo.profile.enums.NewsStatus;
+import com.sanmateo.profile.enums.Status;
 import com.sanmateo.profile.models.AppUser;
 import com.sanmateo.profile.models.News;
 import com.sanmateo.profile.repositories.NewsRepository;
@@ -33,7 +33,7 @@ public class NewsService {
         news.setReportedBy(appUser);
         news.setUpdatedBy(null);
         /** set default status to 'Active' */
-        news.setStatus(NewsStatus.ACTIVE);
+        news.setStatus(Status.ACTIVE);
         return newsRepository.save(news);
     }
 
@@ -62,7 +62,7 @@ public class NewsService {
         return newsRepository.save(existingNews);
     }
 
-    public Page<News> findByStatus(final Pageable pageable, final NewsStatus status) {
+    public Page<News> findByStatus(final Pageable pageable, final Status status) {
         return newsRepository.findByStatus(pageable, status);
     }
 
@@ -77,7 +77,7 @@ public class NewsService {
     public NewsDto convert(final News news) {
         final NewsDto newsDto = new NewsDto();
         newsDto.setId(news.getId());
-        news.setStatus(news.getStatus());
+        newsDto.setStatus(news.getStatus());
         newsDto.setCreatedAt(news.getCreatedAt());
         newsDto.setUpdatedAt(news.getUpdatedAt());
         newsDto.setActive(news.getActive());
