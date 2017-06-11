@@ -34,7 +34,7 @@ public class GalleryDto {
 
     private Status status;
 
-    @JsonProperty("reported_by")
+    @JsonProperty("created_by")
     private SimplifiedAppUserDto createdBy;
 
     @JsonProperty("updated_by")
