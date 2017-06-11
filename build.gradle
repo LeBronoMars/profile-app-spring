@@ -24,6 +24,8 @@ repositories {
 
 dependencies {
 	compile('org.springframework.boot:spring-boot-starter')
+	compile ('it.ozimov:spring-boot-email-core:0.6.2')
+	compile ('org.apache.commons:commons-lang3:3.5')
 	compile('org.springframework.boot:spring-boot-starter-data-rest')
 	compile('org.springframework.boot:spring-boot-starter-security')
 	compile('org.springframework.boot:spring-boot-starter-web')

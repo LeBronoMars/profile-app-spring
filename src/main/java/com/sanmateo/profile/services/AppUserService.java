@@ -80,6 +80,14 @@ public class AppUserService {
         return appUserRepository.findOne(id);
     }
 
+    public void save(final AppUser appUser) {
+        appUserRepository.save(appUser);
+    }
+
+    public Optional<AppUser> findByEmail(final String email) {
+        return appUserRepository.findByEmail(email);
+    }
+
     public AppUser findByUsername(String username) {
         Optional<AppUser> appUser = appUserRepository.findByUsername(username);
         return appUser.map(user -> user).orElseThrow(() -> new NotFoundException(AppUser.class, username));

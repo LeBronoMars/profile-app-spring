@@ -71,4 +71,8 @@ public class AppUser extends BaseModel {
     @NotNull(message = "gender is required.")
     @ApiModelProperty(example = "Male")
     private String gender;
+
+    public String getFullName() {
+        return firstName + " " + lastName;
+    }
 }

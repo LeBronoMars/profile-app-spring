@@ -6,9 +6,11 @@ import com.sanmateo.profile.config.TokenProvider;
 import com.sanmateo.profile.dto.user.AppUserDto;
 import com.sanmateo.profile.dto.user.AppUserLoginDto;
 import com.sanmateo.profile.dto.user.AppUserRegistrationDto;
+import com.sanmateo.profile.dto.user.ForgotPasswordDto;
 import com.sanmateo.profile.exceptions.CustomException;
 import com.sanmateo.profile.models.AppUser;
 import com.sanmateo.profile.services.AppUserService;
+import com.sanmateo.profile.services.ForgotPasswordService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -58,6 +60,9 @@ public class AppUserController {
     @Inject
     private TokenProvider tokenProvider;
 
+    @Inject
+    private ForgotPasswordService forgotPasswordService;
+
     @Value("${jwt.app.secret}")
     private String jwtSecret;
 
@@ -100,6 +105,21 @@ public class AppUserController {
             return ResponseEntity.ok(new LoginResponse(jwt));
         } catch (AuthenticationException exception) {
             return new ResponseEntity<>(Collections.singletonMap("message", exception.getLocalizedMessage()), HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    /**
+     * forgot password request
+     */
+    @RequestMapping(value = "/forgot_password", method = RequestMethod.POST)
+    public ResponseEntity<?> forgotPassword(@Valid @RequestBody ForgotPasswordDto forgotPasswordDto) {
+        log.info("REST request for forgot password : {}", forgotPasswordDto);
+
+        try {
+            forgotPasswordService.generateNewPassword(forgotPasswordDto.getEmail());
+            return new ResponseEntity<>(Collections.singletonMap("message", "Your new password was successfully sent to your email."), HttpStatus.OK);
+        } catch (CustomException e) {
+            return new ResponseEntity<>(Collections.singletonMap("message", e.getLocalizedMessage()), HttpStatus.NOT_FOUND);
         }
     }
 
