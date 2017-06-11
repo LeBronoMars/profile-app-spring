@@ -1,6 +1,7 @@
 package com.sanmateo.profile.dto.user;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.sanmateo.profile.enums.Status;
 import com.sanmateo.profile.enums.UserRole;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -43,8 +44,12 @@ public class UpdateUserDto {
     @ApiModelProperty(example = "P@ssw0rd")
     private String password;
 
+    @JsonProperty("pic_url")
     private String picUrl;
 
     @ApiModelProperty(example = "Male", allowableValues = "Male, Female")
     private String gender;
+
+    @ApiModelProperty(example = "Active", allowableValues = "Active, Inactive")
+    private Status status;
 }

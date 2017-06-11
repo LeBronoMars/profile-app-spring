@@ -1,6 +1,7 @@
 package com.sanmateo.profile.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.sanmateo.profile.enums.Status;
 import com.sanmateo.profile.enums.UserRole;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -61,7 +62,9 @@ public class AppUser extends BaseModel {
     private String password;
 
     @Column(columnDefinition = "CHAR(10)", length = 10, nullable = false)
-    private String status;
+    @ApiModelProperty(example = "Active", allowableValues = "Active, Inactive")
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     @JsonProperty("pic_url")
     private String picUrl;

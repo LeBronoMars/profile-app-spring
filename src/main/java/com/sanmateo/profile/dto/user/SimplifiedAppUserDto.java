@@ -1,6 +1,8 @@
 package com.sanmateo.profile.dto.user;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.sanmateo.profile.enums.Status;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
@@ -31,4 +33,5 @@ public class SimplifiedAppUserDto {
     @JsonProperty("pic_url")
     private String picUrl;
 
+    private Status status;
 }

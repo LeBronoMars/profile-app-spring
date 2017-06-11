@@ -2,6 +2,7 @@ package com.sanmateo.profile.dto.user;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.sanmateo.profile.enums.Status;
 import com.sanmateo.profile.enums.UserRole;
 import lombok.Data;
 
@@ -42,7 +43,7 @@ public class AppUserDto {
     private String email;
     private String username;
     private UserRole role;
-    private String status;
+    private Status status;
 
     @JsonProperty("pic_url")
     private String picUrl;

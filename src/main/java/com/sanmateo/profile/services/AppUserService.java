@@ -5,11 +5,11 @@ import com.sanmateo.profile.dto.user.AppUserDto;
 import com.sanmateo.profile.dto.user.AppUserRegistrationDto;
 import com.sanmateo.profile.dto.user.SimplifiedAppUserDto;
 import com.sanmateo.profile.dto.user.UpdateUserDto;
+import com.sanmateo.profile.enums.Status;
 import com.sanmateo.profile.exceptions.CustomException;
 import com.sanmateo.profile.exceptions.NotFoundException;
 import com.sanmateo.profile.models.AppUser;
 import com.sanmateo.profile.repositories.AppUserRepository;
-import org.aspectj.weaver.ast.Not;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,7 +61,7 @@ public class AppUserService {
                 newUser.setPassword(passwordEncoder.encode(appUserRegistrationDto.getPassword()));
 
                 /** set default status to 'Active' */
-                newUser.setStatus("Active");
+                newUser.setStatus(Status.ACTIVE);
 
                 /** generate default Avatar */
                 final String encodedUsername = passwordEncoder.encode(appUserRegistrationDto.getEmail());
@@ -85,16 +85,49 @@ public class AppUserService {
             if (existingUserByEmail.isPresent()) {
                 throw new CustomException("Email: '" + updateUserDto.getEmail() + "' already in use.");
             } else {
-                existingUser.setFirstName(updateUserDto.getFirstName());
-                existingUser.setMiddleName(updateUserDto.getMiddleName());
-                existingUser.setLastName(updateUserDto.getLastName());
-                existingUser.setAddress(updateUserDto.getAddress());
-                existingUser.setContactNo(updateUserDto.getContactNo());
-                existingUser.setEmail(updateUserDto.getEmail());
-                existingUser.setUsername(updateUserDto.getUsername());
-                existingUser.setRole(updateUserDto.getRole());
-                existingUser.setGender(updateUserDto.getGender());
-                existingUser.setPicUrl(updateUserDto.getPicUrl());
+                if (updateUserDto.getFirstName() != null) {
+                    existingUser.setFirstName(updateUserDto.getFirstName());
+                }
+
+                if (updateUserDto.getMiddleName() != null) {
+                    existingUser.setMiddleName(updateUserDto.getMiddleName());
+                }
+
+                if (updateUserDto.getLastName() != null) {
+                    existingUser.setLastName(updateUserDto.getLastName());
+                }
+
+                if (updateUserDto.getAddress() != null) {
+                    existingUser.setAddress(updateUserDto.getAddress());
+                }
+
+                if (updateUserDto.getContactNo() != null) {
+                    existingUser.setContactNo(updateUserDto.getContactNo());
+                }
+
+                if (updateUserDto.getEmail() != null) {
+                    existingUser.setEmail(updateUserDto.getEmail());
+                }
+
+                if (updateUserDto.getUsername() != null) {
+                    existingUser.setUsername(updateUserDto.getUsername());
+                }
+
+                if (updateUserDto.getRole() != null) {
+                    existingUser.setRole(updateUserDto.getRole());
+                }
+
+                if (updateUserDto.getGender() != null) {
+                    existingUser.setGender(updateUserDto.getGender());
+                }
+
+                if (updateUserDto.getPicUrl() != null) {
+                    existingUser.setPicUrl(updateUserDto.getPicUrl());
+                }
+
+                if (updateUserDto.getStatus() != null) {
+                    existingUser.setStatus(updateUserDto.getStatus());
+                }
                 appUserRepository.save(existingUser);
                 return existingUser;
             }
