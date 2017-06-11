@@ -3,10 +3,8 @@ package com.sanmateo.profile.controllers;
 
 import com.sanmateo.profile.config.JwtConfigurer;
 import com.sanmateo.profile.config.TokenProvider;
-import com.sanmateo.profile.dto.user.AppUserDto;
-import com.sanmateo.profile.dto.user.AppUserLoginDto;
-import com.sanmateo.profile.dto.user.AppUserRegistrationDto;
-import com.sanmateo.profile.dto.user.ForgotPasswordDto;
+import com.sanmateo.profile.dto.user.*;
+import com.sanmateo.profile.enums.UserRole;
 import com.sanmateo.profile.exceptions.CustomException;
 import com.sanmateo.profile.models.AppUser;
 import com.sanmateo.profile.services.AppUserService;
@@ -87,6 +85,26 @@ public class AppUserController {
     }
 
     /**
+     * update user
+     */
+    @RequestMapping(value = "/user",
+            method = RequestMethod.PUT,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> updateUser(@Valid @RequestBody UpdateUserDto updateUserDto, HttpServletRequest request) throws URISyntaxException {
+        log.info("REST request to update User : {}", updateUserDto);
+        return Optional.ofNullable(request.getRemoteUser()).map(user -> {
+            final AppUser appUser = appUserService.findByUsername(user);
+            try {
+                final AppUser updatedUser = appUserService.updateUser(appUser, updateUserDto);
+                final AppUserDto appUserDto = appUserService.convert(updatedUser);
+                return new ResponseEntity<>(appUserDto, HttpStatus.OK);
+            } catch (CustomException e) {
+                return new ResponseEntity<>(Collections.singletonMap("message", e.getLocalizedMessage()), HttpStatus.BAD_REQUEST);
+            }
+        }).orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null));
+    }
+
+    /**
      * authenticate a user
      */
     @RequestMapping(value = "/user/auth", method = RequestMethod.POST)
@@ -157,10 +175,17 @@ public class AppUserController {
             @ApiImplicitParam(name = "size", value = "Used to limit query results", dataType = "int", defaultValue = "20", paramType = "path"),
             @ApiImplicitParam(name = "sort", value = "Used to sort query results", dataType = "string", example = "email,asc", paramType = "path"),
     })
-    public ResponseEntity<Page<AppUser>> getAllUsers(Pageable pageable) throws URISyntaxException {
-        final Page<AppUser> users = appUserService.findAll(pageable);
-        log.info("REST request to get all users : {}", users);
-        return new ResponseEntity<>(users, HttpStatus.OK);
+    public ResponseEntity<?> getAllUsers(Pageable pageable, HttpServletRequest request) throws URISyntaxException {
+        return Optional.ofNullable(request.getRemoteUser()).map(user -> {
+            final AppUser appUser = appUserService.findByUsername(user);
+            if (appUser.getRole().equals(UserRole.ADMIN)) {
+                final Page<AppUser> users = appUserService.findAll(pageable);
+                log.info("REST request to get all users : {}", users);
+                return new ResponseEntity<>(users, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(Collections.singletonMap("message", "You are not allowed to access this resource."), HttpStatus.NOT_FOUND);
+            }
+        }).orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null));
     }
 
     /**

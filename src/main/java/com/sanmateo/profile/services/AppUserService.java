@@ -4,10 +4,12 @@ package com.sanmateo.profile.services;
 import com.sanmateo.profile.dto.user.AppUserDto;
 import com.sanmateo.profile.dto.user.AppUserRegistrationDto;
 import com.sanmateo.profile.dto.user.SimplifiedAppUserDto;
+import com.sanmateo.profile.dto.user.UpdateUserDto;
 import com.sanmateo.profile.exceptions.CustomException;
 import com.sanmateo.profile.exceptions.NotFoundException;
 import com.sanmateo.profile.models.AppUser;
 import com.sanmateo.profile.repositories.AppUserRepository;
+import org.aspectj.weaver.ast.Not;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,6 +70,33 @@ public class AppUserService {
                 appUserRepository.save(newUser);
                 log.info("New user successfully created: {}", newUser);
                 return newUser;
+            }
+        }
+    }
+
+    public AppUser updateUser(final AppUser existingUser, final UpdateUserDto updateUserDto) {
+        final Optional<AppUser> existingUserByUsername = appUserRepository.findByUsernameAndIdNot(updateUserDto.getUsername(), existingUser.getId());
+
+        if (existingUserByUsername.isPresent()) {
+            throw new CustomException("Username: '" + updateUserDto.getUsername() + "' already in use.");
+        } else {
+            final Optional<AppUser> existingUserByEmail = appUserRepository.findByEmailAndIdNot(updateUserDto.getEmail(), existingUser.getId());
+
+            if (existingUserByEmail.isPresent()) {
+                throw new CustomException("Email: '" + updateUserDto.getEmail() + "' already in use.");
+            } else {
+                existingUser.setFirstName(updateUserDto.getFirstName());
+                existingUser.setMiddleName(updateUserDto.getMiddleName());
+                existingUser.setLastName(updateUserDto.getLastName());
+                existingUser.setAddress(updateUserDto.getAddress());
+                existingUser.setContactNo(updateUserDto.getContactNo());
+                existingUser.setEmail(updateUserDto.getEmail());
+                existingUser.setUsername(updateUserDto.getUsername());
+                existingUser.setRole(updateUserDto.getRole());
+                existingUser.setGender(updateUserDto.getGender());
+                existingUser.setPicUrl(updateUserDto.getPicUrl());
+                appUserRepository.save(existingUser);
+                return existingUser;
             }
         }
     }
