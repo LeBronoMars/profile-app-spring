@@ -178,12 +178,12 @@ public class AppUserController {
     public ResponseEntity<?> getAllUsers(Pageable pageable, HttpServletRequest request) throws URISyntaxException {
         return Optional.ofNullable(request.getRemoteUser()).map(user -> {
             final AppUser appUser = appUserService.findByUsername(user);
-            if (appUser.getRole().equals(UserRole.ADMIN)) {
+            if (appUser.getRole().equals(UserRole.REGULAR_USER)) {
+                return new ResponseEntity<>(Collections.singletonMap("message", "You are not allowed to access this resource."), HttpStatus.NOT_FOUND);
+            } else {
                 final Page<AppUser> users = appUserService.findAll(pageable);
                 log.info("REST request to get all users : {}", users);
                 return new ResponseEntity<>(users, HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(Collections.singletonMap("message", "You are not allowed to access this resource."), HttpStatus.NOT_FOUND);
             }
         }).orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null));
     }
