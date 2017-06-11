@@ -14,13 +14,16 @@ import javax.persistence.OneToOne;
  */
 @Entity
 @Data
-public class Announcement extends BaseModel {
+public class WaterMonitoring extends BaseModel {
 
     @Column(nullable = false)
-    private String title;
+    private String area;
 
     @Column(nullable = false)
-    private String message;
+    private float level;
+
+    @Column(nullable = false)
+    private String alert;
 
     @OneToOne
     @Fetch(value = FetchMode.JOIN)
