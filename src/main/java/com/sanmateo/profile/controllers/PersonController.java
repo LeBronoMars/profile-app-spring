@@ -28,7 +28,7 @@ import java.util.Collections;
  * Created by rsbulanon on 6/11/17.
  */
 @Controller
-@RequestMapping(path = "/api")
+@RequestMapping(path = "/exam")
 @Api(value = "User Module")
 public class PersonController {
 
